@@ -60,13 +60,47 @@ public class Inspector {
 		
 		//get constructors
 		Constructor constructorsArray[] = classObj.getDeclaredConstructors();
-		
 		for(int i = 0; i < constructorsArray.length; i++){
 			//print the constructor name
 			System.out.println("CONSTRUCTORS: " + constructorsArray[i].toString());
+			Class parameterTypes[] = constructorsArray[i].getParameterTypes();
+			//print parameter types
+			for(int j = 0; j < parameterTypes.length; j++){
+				System.out.println("\tConstructor Parameters: " + parameterTypes[j].getSimpleName());
+			}
+			//print the modifiers of method
+			String modifierTypes = Modifier.toString(constructorsArray[i].getModifiers());
+			System.out.println("\tModifier Types: " + modifierTypes);
 		}
 		
+		//get fields
+		Field fieldArray[] = declaringClass.getDeclaredFields();
+		//prints name, modifier, type
+		for(int i = 0; i < fieldArray.length; i++){
+			System.out.println("FIELD: " + fieldArray[i].getName());
+			String getModifier = Modifier.toString(fieldArray[i].getModifiers());
+			Object getType = fieldArray[i].getType();
+			System.out.println("\tType: " + getType);
+			System.out.println("\tModifier: " + getModifier);
+			
+		}
 		
+		/*//print field name
+			if (fieldArray[i].getType().isPrimitive()){
+				System.out.println("FIELD (primitive): " + fieldArray[i].getName());
+			}
+			else if(fieldArray[i].getType().isArray()){
+				try {
+					fieldArray[i].setAccessible(true);
+					for(int j = 0; j < Array.getLength(fieldArray[j].get(obj)); j++){
+						System.out.println("asdf" + Array.get(obj, j));
+					}
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}else{
+				System.out.println("not primitive");
+			}*/
 		
 		//refactoring for getSuperclass
 		/*Class subClass = null;
