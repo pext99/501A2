@@ -5,18 +5,23 @@
  * References:
  * To print all elements in an array line by line (for readability)
  */
-import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.Arrays;
 
 
 public class Inspector {
 	public void inspect(Object obj, boolean recursive){
-		//get declaring class
+		Class classObj = obj.getClass();
+		
+		//print/get declaring class
 		Class declaringClass = obj.getClass(); //class object
 		System.out.println("\nDeclaring class: " + declaringClass.getName() + "\n");
-		
+		Class superClass = declaringClass.getSuperclass();
+		while (superClass != null && superClass.getName() != "java.lang.Object"){//traverse through hierarchy
+			System.out.println("Superclass: " + superClass.getName());
+			superClass = superClass.getSuperclass();
+		}
+		//print interfaces
 		Class[] interfaces = declaringClass.getInterfaces();
 		int interfaceLength = interfaces.length;
 		for(int i = 0; i < interfaceLength; i++){
@@ -28,26 +33,40 @@ public class Inspector {
 		Method methodsArray[] = declaringClass.getMethods(); 
 		int methodsArrayLength = methodsArray.length;
 		System.out.print("Methods in Class: \n");
+		//name of method
 		for(int i = 0; i < methodsArrayLength; i++){
 			System.out.println(methodsArray[i]);
-			
 			//return parameter types
 			Class[] parameterTypes = methodsArray[i].getParameterTypes();
 			int parameterLength = parameterTypes.length;
 			for(int j = 0; j < parameterLength; j++){
 				System.out.println("\tParameter Type: " + parameterTypes[j].toString());
 			}
+			//return the exception types
+			Class<?>[] exceptionTypes = methodsArray[i].getExceptionTypes();
+			int exceptionLength = exceptionTypes.length;
+			for(int j = 0; j < exceptionLength; j++){
+				System.out.println("\tException Types: " + exceptionTypes[j].toString());
+			}
+			//return the return types
+			Class returnTypes = methodsArray[i].getReturnType();
+			System.out.println("\tReturn Types: " + returnTypes.getSimpleName());
+			//return the modifiers of method
+			String modifierTypes = Modifier.toString(methodsArray[i].getModifiers());
+			System.out.println("\tModifier Types: " + modifierTypes);
 		}
-		
 		//http://stackoverflow.com/questions/409784/whats-the-simplest-way-to-print-a-java-array
 		//Arrays.asList(methodsArray).stream().forEach(s -> System.out.println(s + "\n\t")); //to print all elements of an array line by line
 		
+		//get constructors
+		Constructor constructorsArray[] = classObj.getDeclaredConstructors();
 		
-		Class superClass = declaringClass.getSuperclass();
-		while (superClass != null && superClass.getName() != "java.lang.Object"){//traverse through hierarchy
-			System.out.println("Superclass: " + superClass.getName());
-			superClass = superClass.getSuperclass();
+		for(int i = 0; i < constructorsArray.length; i++){
+			//print the constructor name
+			System.out.println("CONSTRUCTORS: " + constructorsArray[i].toString());
 		}
+		
+		
 		
 		//refactoring for getSuperclass
 		/*Class subClass = null;
